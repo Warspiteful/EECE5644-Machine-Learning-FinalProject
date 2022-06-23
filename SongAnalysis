@@ -1,0 +1,66 @@
+import sklearn
+import numpy as np # linear algebra
+import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import LabelEncoder
+
+from sklearn.datasets import make_classification
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+
+from scipy.stats import multivariate_normal # MVN not univariate
+
+file_path = "data.csv"
+df = pd.read_csv(file_path, index_col='year')
+df.drop(np.sort(df.index.unique().to_numpy())[0:29], inplace = True)
+df.drop(np.sort(df.index.unique().to_numpy())[-1:], inplace = True)
+
+df.drop(['name','id', 'release_date', 'artists' ], axis = 1, inplace = True)
+
+print(df.head())
+print(df.index.unique())
+print(df.index.value_counts())
+
+print(df.loc[np.sort(df.index.unique().to_numpy()) ])
+
+
+
+labels = set()
+for ax in df.index:
+    labels.add(ax)
+
+X = df.values
+Y = np.array(list(labels))
+y = np.array(df.index)
+
+# Sourced from Stack Overflow - https://stackoverflow.com/questions/1624883/alternative-way-to-split-a-list-into-groups-of-n
+list_of_groups = list(zip(*(iter(Y),) * 10))
+
+mu= []
+
+for index in range(len(list_of_groups)):
+        total =0
+        for i in list_of_groups[index]:
+            aa = []
+            for feature in df:
+                aa.append(df[feature][i].to_numpy())
+            if(type(total) == int):
+                total = aa
+            else:
+                total = np.concatenate((total, np.array(aa)))
+        total = np.array(total)
+        mu.append(np.mean(total))
+    
+mu = np.array(mu)
+n = mu.shape[1]
+Sigma = []
+
+for index in labels:
+    Sigma.append(np.cov([df[feature][index] for feature in df]))
+
+print("Hello")
+
+
