@@ -17,6 +17,8 @@ df.drop(['artists','id', 'name', 'release_date', 'popularity' ], axis = 1, inpla
 df2.drop(['artists','id', 'name', 'release_date', 'album_id','artist_ids', 'time_signature', 'track_number', 'disc_number', 'album' ], axis = 1, inplace = True)
 
 df = pd.concat([df,df2])
+
+print(df.shape)
 ### Only look at decades from 50s to 10s (2020 not included)
 l_drop = np.arange(1921,1950)
 l_drop = np.append(l_drop, 2020)
